@@ -8,6 +8,7 @@ Guide for commit comments :
 
 Dev terminal commants in root of the project's folder "
 
-* 'npm start' : starts the project in localhost
-* 'npm run-script build' : builds the distribution 
+* `npm install` : installs required modules
+* `npm start` : starts the project in localhost
+* `npm run-script build` : builds the distribution 
 
