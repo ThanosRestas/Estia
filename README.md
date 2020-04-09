@@ -1,13 +1,7 @@
-# Theasis
-FPS game created using BabylonJS
+# Estia
+Guide for commit comments :
 
-Building the project :
+* Added : New feature added
+* Bug : Changed foo to bar / Fixed this to that so and so
+* Refactor : Changed this to that 
 
-* npm install
-* npm start
-
-
-Controls :
-
-* WASD for movement
-* 1-5 to cycle through the available weapons
