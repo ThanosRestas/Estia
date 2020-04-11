@@ -103,6 +103,7 @@ gizmoX.dragBehavior.onDragObservable.add((event)=>{
             currentPickedObject.position.x = currentPickedObject.position.x - 0.05;
         }
         currentPickedObject.computeWorldMatrix();
+        // Test
                         
     }
 })
