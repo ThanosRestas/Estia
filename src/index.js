@@ -22,6 +22,8 @@ gizmoManager.attachableMeshes = [];
 // This attaches the camera to the canvas
 camera.attachControl(canvas, true);
 
+
+
 // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
 var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
 
@@ -100,6 +102,7 @@ gizmoX.dragBehavior.onDragObservable.add((event)=>{
         else if(event.delta.x > 0){
             currentPickedObject.position.x = currentPickedObject.position.x - 0.05;
         }
+        currentPickedObject.computeWorldMatrix();
                         
     }
 })
