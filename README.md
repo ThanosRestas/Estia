@@ -1,10 +1,11 @@
 # Estia
-Guide for commit comments :
+Git push message etiquette:
 
 * Added : New feature added
 * Bug : Changed foo to bar / Fixed this to that so and so
 * Refactor : Changed this to that, mainly for design pattern / absraction change
-* Update : changed these values to these values / added comments
+* Update : Changed these values to these values / added comments
+* Removed : Deleted this part of code, or deleted this file or that file
 
 Dev terminal commants in root of the project's folder "
 
