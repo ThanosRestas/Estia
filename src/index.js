@@ -102,8 +102,8 @@ gizmoX.dragBehavior.onDragObservable.add((event)=>{
         else if(event.delta.x > 0){
             currentPickedObject.position.x = currentPickedObject.position.x - 0.05;
         }
-        currentPickedObject.computeWorldMatrix();
-        // Test 2
+        
+        
                         
     }
 })
