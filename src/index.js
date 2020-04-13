@@ -70,7 +70,7 @@ box.edgesWidth = 4.0;
 box.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
 
 var sceneMeshes = [];
-sceneMeshes.push(box2, box3, box4, box5);
+sceneMeshes.push(ground, box2, box3, box4, box5);
 
 var utilLayer = new BABYLON.UtilityLayerRenderer(scene);
 var gizmoY = new BABYLON.AxisDragGizmo(new BABYLON.Vector3(0,1,0), BABYLON.Color3.FromHexString("#FFFF00"), utilLayer);
@@ -81,7 +81,7 @@ gizmoY.dragBehavior.onDragObservable.add((event)=>{
     currentPickedObject.computeWorldMatrix();  
     //console.log("Started dragging : " + currentPickedObject.name);
     
-    if(currentPickedObject.intersectsMesh(ground)){        
+    if(collisionWithObject(currentPickedObject)){        
         // Return the picked object to a position so that it barely touches something   
         currentPickedObject.position.y -= event.delta.y;  
         currentPickedObject.computeWorldMatrix();                  
