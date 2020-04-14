@@ -78,11 +78,13 @@ gizmoY.attachedMesh = box;
 gizmoY.dragBehavior.onDragObservable.add((event)=>{
 
     var currentPickedObject = gizmoY.attachedMesh;
+    currentPickedObject.computeWorldMatrix();  
     //console.log("Started dragging : " + currentPickedObject.name);
     
     if(currentPickedObject.intersectsMesh(ground)){        
-         // Return the picked object to a position so that it barely touches something   
-        currentPickedObject.position.y = currentPickedObject.scaling.y / 2 + 0.001;                        
+        // Return the picked object to a position so that it barely touches something   
+        currentPickedObject.position.y -= event.delta.y;  
+        currentPickedObject.computeWorldMatrix();                  
     }
 })
 
@@ -91,20 +93,14 @@ gizmoX.attachedMesh = box;
 gizmoX.dragBehavior.onDragObservable.add((event)=>{
 
     var currentPickedObject = gizmoX.attachedMesh;
+    currentPickedObject.computeWorldMatrix();   
     //console.log("Started dragging : " + currentPickedObject.name);
     
-    if(collisionWithObject(currentPickedObject)){        
-        // Return the picked object to a position so that it barely touches something     
-        //console.log(event.delta.x);
-        if(event.delta.x < 0){
-            currentPickedObject.position.x = currentPickedObject.position.x + 0.05;
-        }        
-        else if(event.delta.x > 0){
-            currentPickedObject.position.x = currentPickedObject.position.x - 0.05;
-        }
-        
-        
-                        
+    if(collisionWithObject(currentPickedObject)){
+        // Add/subtract the appropriate value to go to no-collision state
+         currentPickedObject.position.x -= event.delta.x;
+         // Recalibrate the position of our current picked mesh -- so collision won't happen again
+         currentPickedObject.computeWorldMatrix(); 
     }
 })
 
@@ -112,19 +108,18 @@ var gizmoZ = new BABYLON.AxisDragGizmo(new BABYLON.Vector3(0,0,1), BABYLON.Color
 gizmoZ.attachedMesh = box;
 gizmoZ.dragBehavior.onDragObservable.add((event)=>{
 
+    // Getting the current picked mesh
     var currentPickedObject = gizmoZ.attachedMesh;
-    //console.log("Started dragging : " + currentPickedObject.name);
+    // Linear algebra black magic I will explain asap || basically recalibrating
+    // the position of our object in space
+    currentPickedObject.computeWorldMatrix();    
     
-    if(collisionWithObject(currentPickedObject)){        
-        // Return the picked object to a position so that it barely touches something        
-        //console.log(event.delta.z);
-        if(event.delta.z < 0){
-            currentPickedObject.position.z = currentPickedObject.position.z + 0.05;
-        }        
-        else if(event.delta.z > 0){
-            currentPickedObject.position.z = currentPickedObject.position.z - 0.05;
-        }
-                        
+    // On collision with the list of available meshes stop movement
+    if(collisionWithObject(currentPickedObject)){
+        // Add/subtract the appropriate value to go to no-collision state
+        currentPickedObject.position.z -= event.delta.z;
+        // Recalibrate the position of our current picked mesh -- so collision won't happen again
+        currentPickedObject.computeWorldMatrix();                        
     }
 })
 
