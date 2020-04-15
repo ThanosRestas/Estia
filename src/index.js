@@ -8,7 +8,7 @@ const engine = new Engine(canvas);
 var scene = new BABYLON.Scene(engine);
 
 // This creates and positions a free camera (non-mesh)
-var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 10, new BABYLON.Vector3(0, 0, 0), scene);
+var camera = new BABYLON.ArcRotateCamera("Camera", -2.53, 0.95, 25, new BABYLON.Vector3(0, 0, 0), scene);
 
 // This enables the position ( arrow ) gizmos on a mesh
 var gizmoManager = new BABYLON.GizmoManager(scene);
@@ -21,6 +21,9 @@ gizmoManager.attachableMeshes = [];
 
 // This attaches the camera to the canvas
 camera.attachControl(canvas, true);
+
+// Wether debugging BabylonJS Inspector is enabled
+var debug = false;
 
 
 
@@ -134,6 +137,28 @@ function collisionWithObject(mesh)
     return false;
 }
 
+
+ //Weapon switching observable
+ scene.onKeyboardObservable.add((kbInfo) => {
+    switch (kbInfo.type) {
+    case BABYLON.KeyboardEventTypes.KEYDOWN:
+        switch (kbInfo.event.key) {   
+        case "`":
+            console.log("Debug mode enabled");
+           
+            if(debug){
+                scene.debugLayer.hide();
+                debug = false;
+            }
+            else{
+                scene.debugLayer.show();
+                debug = true;
+            }
+            break;
+        }                
+        break;
+    }
+ });
 
 // Render every frame
 engine.runRenderLoop(() => {
