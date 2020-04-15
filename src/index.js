@@ -138,14 +138,14 @@ function collisionWithObject(mesh)
 }
 
 
- //Weapon switching observable
+ // Key controller
  scene.onKeyboardObservable.add((kbInfo) => {
     switch (kbInfo.type) {
     case BABYLON.KeyboardEventTypes.KEYDOWN:
-        switch (kbInfo.event.key) {   
+        switch (kbInfo.event.key) {
+        // The button to enable the BabylonJS Inspector   
         case "`":
-            console.log("Debug mode enabled");
-           
+            console.log("Debug mode enabled");           
             if(debug){
                 scene.debugLayer.hide();
                 debug = false;
