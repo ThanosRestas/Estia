@@ -2,39 +2,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>Local Development</title>
 
+    <title>Local Development</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="index.css">
     <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
 
-    <style>
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        #renderCanvas {
-            position: absolute;
-            width: 800px;
-            height: 800px;
-            left: 50%;
-            top: 50%;
-            margin-left: -400px; /* This is half the width */
-            margin-top: -400px; /* This is half the height */
-        }
-    
-
-    </style>
 </head>
 
 <body>
-    <canvas id="renderCanvas" touch-action="none"></canvas>
+
+    <canvas class="canvas" id="renderCanvas" touch-action="none"></canvas>
+    <buttton class="btn-class" id="btn">Change Color</buttton>
     <script src="main.js"></script>
-    
+    <script src="/src/index.js"></script>
+  
 </body>
 
 </html>
-
