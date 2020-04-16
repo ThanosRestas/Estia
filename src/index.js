@@ -1,6 +1,7 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 import { Engine } from "@babylonjs/core/Legacy/legacy";
 import Item from "./item.js"
+import Gizmo from "./gizmoManager.js"
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new Engine(canvas);
@@ -37,19 +38,16 @@ light.intensity = 1;
 var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene);
 ground.checkCollisions = true;
 
-// Create boxes    
-var box = BABYLON.MeshBuilder.CreateBox("mainBox", {width: 1, height: 1, depth: 1}, scene);
-box.checkCollisions = true;
-box.position.y = 2;
-
+// Create boxes 
 var boxItem = new Item(BABYLON.MeshBuilder.CreateBox("mainBox", {width: 1, height: 1, depth: 1}, scene));
-
+boxItem.mesh.checkCollisions = true;
+boxItem.mesh.position.y = 2;
 
 
 var box2 = BABYLON.MeshBuilder.CreateBox("positiveXaxisBox", {width: 1, height: 1, depth: 1}, scene);
 box2.checkCollisions = true;
 box2.position.x = 2;
-box2.position.y = box2.scaling.y / 2;
+box2.position.y = 2;
 
 var box3 = BABYLON.MeshBuilder.CreateBox("negativeXaxisBox", {width: 1, height: 1, depth: 1}, scene);
 box3.checkCollisions = true;
@@ -70,79 +68,24 @@ box5.position.y = box5.scaling.y / 2;
 var material = new BABYLON.StandardMaterial(scene);
 material.alpha = 1;
 material.diffuseColor = new BABYLON.Color3(0, 0, 0);
-box.material = material;
+boxItem.mesh.material = material;
 
 // Make edges pop with color
-box.enableEdgesRendering();    
-box.edgesWidth = 4.0;
-box.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
+boxItem.mesh.enableEdgesRendering();    
+boxItem.mesh.edgesWidth = 4.0;
+boxItem.mesh.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
 
 var sceneMeshes = [];
-sceneMeshes.push(ground, box2, box3, box4, box5);
+sceneMeshes.push(ground, box3, box4, box5);
 
-//var test = new Item(box);
+
 
 var utilLayer = new BABYLON.UtilityLayerRenderer(scene);
-var gizmoY = new BABYLON.AxisDragGizmo(new BABYLON.Vector3(0,1,0), BABYLON.Color3.FromHexString("#FFFF00"), utilLayer);
-gizmoY.attachedMesh = box;
-gizmoY.dragBehavior.onDragObservable.add((event)=>{
+var testGizmo = new Gizmo(boxItem.mesh, utilLayer, sceneMeshes);
 
-    var currentPickedObject = gizmoY.attachedMesh;
-    currentPickedObject.computeWorldMatrix();  
-    //console.log("Started dragging : " + currentPickedObject.name);
-    
-    if(collisionWithObject(currentPickedObject)){        
-        // Return the picked object to a position so that it barely touches something   
-        currentPickedObject.position.y -= event.delta.y;  
-        currentPickedObject.computeWorldMatrix();                  
-    }
-})
+var testGizmo2 = new Gizmo(box2, utilLayer, sceneMeshes );
 
-var gizmoX = new BABYLON.AxisDragGizmo(new BABYLON.Vector3(1,0,0), BABYLON.Color3.FromHexString("#e50000"), utilLayer);
-gizmoX.attachedMesh = box;
-gizmoX.dragBehavior.onDragObservable.add((event)=>{
 
-    var currentPickedObject = gizmoX.attachedMesh;
-    currentPickedObject.computeWorldMatrix();   
-    //console.log("Started dragging : " + currentPickedObject.name);
-    
-    if(collisionWithObject(currentPickedObject)){
-        // Add/subtract the appropriate value to go to no-collision state
-         currentPickedObject.position.x -= event.delta.x;
-         // Recalibrate the position of our current picked mesh -- so collision won't happen again
-         currentPickedObject.computeWorldMatrix(); 
-    }
-})
-
-var gizmoZ = new BABYLON.AxisDragGizmo(new BABYLON.Vector3(0,0,1), BABYLON.Color3.FromHexString("#0000ff"), utilLayer);
-gizmoZ.attachedMesh = box;
-gizmoZ.dragBehavior.onDragObservable.add((event)=>{
-
-    // Getting the current picked mesh
-    var currentPickedObject = gizmoZ.attachedMesh;
-    // Linear algebra black magic I will explain asap || basically recalibrating
-    // the position of our object in space
-    currentPickedObject.computeWorldMatrix();    
-    
-    // On collision with the list of available meshes stop movement
-    if(collisionWithObject(currentPickedObject)){
-        // Add/subtract the appropriate value to go to no-collision state
-        currentPickedObject.position.z -= event.delta.z;
-        // Recalibrate the position of our current picked mesh -- so collision won't happen again
-        currentPickedObject.computeWorldMatrix();                        
-    }
-})
-
-function collisionWithObject(mesh)
-{
-    for (let i = 0; i < sceneMeshes.length; i++ ){
-        if(mesh.intersectsMesh(sceneMeshes[i])){
-            console.log(mesh.name + " collides with : " + sceneMeshes[i].name);
-            return true;
-        }
-    }
-    return false;
-}
 
 
  // Key controller
