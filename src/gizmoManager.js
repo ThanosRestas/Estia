@@ -6,7 +6,7 @@ export default class Gizmo{
         this.layer = layer;
              
         this.sceneMeshes = sceneMeshes;
-
+        
         this.positionGizmoX = this.createPositionGizmo(new BABYLON.Vector3(1, 0, 0), BABYLON.Color3.FromHexString("#FF0000"));
         this.positionGizmoY = this.createPositionGizmo(new BABYLON.Vector3(0, 1, 0), BABYLON.Color3.FromHexString("#FFFF00"));
         this.positionGizmoZ = this.createPositionGizmo(new BABYLON.Vector3(0, 0, 1), BABYLON.Color3.FromHexString("#0000FF"));
@@ -21,10 +21,10 @@ export default class Gizmo{
             var currentPickedObject = newGizmo.attachedMesh;
             currentPickedObject.computeWorldMatrix();  
             console.log("Started dragging : " + currentPickedObject.name);
-            
-            if(collisionWithObject(currentPickedObject, this.sceneMeshes)){        
-                // Return the picked object to a position so that it barely touches something 
-                
+
+            // Return the picked object to a position so that it barely touches something 
+            if(collisionWithObject(currentPickedObject, this.sceneMeshes)){
+                // Detecting which axis we are moving                 
                 if(axis.x == 1)
                 {
                     currentPickedObject.position.x -= event.delta.x;  
