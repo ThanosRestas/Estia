@@ -1,5 +1,6 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 import { Engine } from "@babylonjs/core/Legacy/legacy";
+import Item from "./item.js"
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new Engine(canvas);
@@ -41,6 +42,10 @@ var box = BABYLON.MeshBuilder.CreateBox("mainBox", {width: 1, height: 1, depth: 
 box.checkCollisions = true;
 box.position.y = 2;
 
+var boxItem = new Item(BABYLON.MeshBuilder.CreateBox("mainBox", {width: 1, height: 1, depth: 1}, scene));
+
+
+
 var box2 = BABYLON.MeshBuilder.CreateBox("positiveXaxisBox", {width: 1, height: 1, depth: 1}, scene);
 box2.checkCollisions = true;
 box2.position.x = 2;
@@ -74,6 +79,8 @@ box.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
 
 var sceneMeshes = [];
 sceneMeshes.push(ground, box2, box3, box4, box5);
+
+//var test = new Item(box);
 
 var utilLayer = new BABYLON.UtilityLayerRenderer(scene);
 var gizmoY = new BABYLON.AxisDragGizmo(new BABYLON.Vector3(0,1,0), BABYLON.Color3.FromHexString("#FFFF00"), utilLayer);
