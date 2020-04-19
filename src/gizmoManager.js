@@ -6,10 +6,16 @@ export default class Gizmo{
         this.layer = layer;
              
         this.sceneMeshes = sceneMeshes;
+
+        this.positionGizmo = [];
         
-        this.positionGizmoX = this.createPositionGizmo(new BABYLON.Vector3(1, 0, 0), BABYLON.Color3.FromHexString("#FF0000"));
-        this.positionGizmoY = this.createPositionGizmo(new BABYLON.Vector3(0, 1, 0), BABYLON.Color3.FromHexString("#FFFF00"));
-        this.positionGizmoZ = this.createPositionGizmo(new BABYLON.Vector3(0, 0, 1), BABYLON.Color3.FromHexString("#0000FF"));
+        //this.positionGizmoX = this.createPositionGizmo(new BABYLON.Vector3(1, 0, 0), BABYLON.Color3.FromHexString("#FF0000"));
+        //this.positionGizmoY = this.createPositionGizmo(new BABYLON.Vector3(0, 1, 0), BABYLON.Color3.FromHexString("#FFFF00"));
+        //this.positionGizmoZ = this.createPositionGizmo(new BABYLON.Vector3(0, 0, 1), BABYLON.Color3.FromHexString("#0000FF"));
+
+        this.positionGizmo.push(this.createPositionGizmo(new BABYLON.Vector3(1, 0, 0), BABYLON.Color3.FromHexString("#FF0000")));
+        this.positionGizmo.push(this.createPositionGizmo(new BABYLON.Vector3(0, 1, 0), BABYLON.Color3.FromHexString("#FFFF00")));
+        this.positionGizmo.push(this.createPositionGizmo(new BABYLON.Vector3(0, 0, 1), BABYLON.Color3.FromHexString("#0000FF")));
         
     
     }
@@ -48,7 +54,7 @@ export default class Gizmo{
 function collisionWithObject(mesh, sceneMeshes)
 {
     for (let i = 0; i < sceneMeshes.length; i++ ){
-        if(mesh.intersectsMesh(sceneMeshes[i])){
+        if(mesh.intersectsMesh(sceneMeshes[i]) && mesh != sceneMeshes[i]){
             //console.log(mesh.name + " collides with : " + sceneMeshes[i].name);
             return true;
         }

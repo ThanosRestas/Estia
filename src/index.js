@@ -35,7 +35,6 @@ var boxItem = new Item(BABYLON.MeshBuilder.CreateBox("mainBox", {width: 1, heigh
 boxItem.mesh.checkCollisions = true;
 boxItem.mesh.position.y = 2;
 
-
 var box2 = BABYLON.MeshBuilder.CreateBox("positiveXaxisBox", {width: 1, height: 1, depth: 1}, scene);
 box2.checkCollisions = true;
 box2.position.x = 2;
@@ -68,15 +67,10 @@ boxItem.mesh.edgesWidth = 4.0;
 boxItem.mesh.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
 
 var sceneMeshes = [];
-sceneMeshes.push(ground);
-
-// Testing attaching position gizmos on a mesh through gizmo manager class
-//let testGizmo = new Gizmo(boxItem.mesh, utilLayer, sceneMeshes);
-//let testGizmo2 = new Gizmo(box2, utilLayer, sceneMeshes );
-
+sceneMeshes.push(ground, boxItem.mesh, box2, box3, box4, box5);
 
 let pickableMeshes = [];
-pickableMeshes.push(box2, boxItem.mesh, box3, box4, box5);
+pickableMeshes.push(boxItem.mesh, box2, box3, box4, box5);
 
 let currentActiveGizmo = null; 
 let previousActiveGizmo = null; 
@@ -88,22 +82,18 @@ scene.onPointerObservable.add((pointerInfo) => {
                 if(pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh)){
                     if(currentActiveGizmo != null)
                     {
-                        currentActiveGizmo.positionGizmoX.attachedMesh = null;
-                        currentActiveGizmo.positionGizmoY.attachedMesh = null;
-                        currentActiveGizmo.positionGizmoZ.attachedMesh = null;
+                        currentActiveGizmo.positionGizmo.forEach(element => {
+                            element.attachedMesh = null;
+                        });                       
 
                         currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
                     }
                     else
                     {                        
                         currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
-                    }
-                    
-                     
+                    }     
                 }
             }
-            
-            
             break;
     }
 });
