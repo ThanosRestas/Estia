@@ -68,15 +68,45 @@ boxItem.mesh.edgesWidth = 4.0;
 boxItem.mesh.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
 
 var sceneMeshes = [];
-sceneMeshes.push(ground, box3, box4, box5);
+sceneMeshes.push(ground);
+
+// Testing attaching position gizmos on a mesh through gizmo manager class
+//let testGizmo = new Gizmo(boxItem.mesh, utilLayer, sceneMeshes);
+//let testGizmo2 = new Gizmo(box2, utilLayer, sceneMeshes );
 
 
+let pickableMeshes = [];
+pickableMeshes.push(box2, boxItem.mesh, box3, box4, box5);
 
+let currentActiveGizmo = null; 
+let previousActiveGizmo = null; 
+scene.onPointerObservable.add((pointerInfo) => {
+    switch (pointerInfo.type) {
+        case BABYLON.PointerEventTypes.POINTERDOWN:
+        
+            if(pointerInfo.pickInfo.hit != false){
+                if(pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh)){
+                    if(currentActiveGizmo != null)
+                    {
+                        currentActiveGizmo.positionGizmoX.attachedMesh = null;
+                        currentActiveGizmo.positionGizmoY.attachedMesh = null;
+                        currentActiveGizmo.positionGizmoZ.attachedMesh = null;
 
-
-var testGizmo = new Gizmo(boxItem.mesh, utilLayer, sceneMeshes);
-var testGizmo2 = new Gizmo(box2, utilLayer, sceneMeshes );
-
+                        currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
+                    }
+                    else
+                    {                        
+                        currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
+                    }
+                    
+                     
+                }
+            }
+            
+            
+            break;
+    }
+});
 
 
 
@@ -106,3 +136,5 @@ var testGizmo2 = new Gizmo(box2, utilLayer, sceneMeshes );
 engine.runRenderLoop(() => {
     scene.render();
 });
+
+

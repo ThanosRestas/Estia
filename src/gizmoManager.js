@@ -40,6 +40,8 @@ export default class Gizmo{
                 currentPickedObject.computeWorldMatrix();                  
             }
         })
+
+        return newGizmo;
     }
 }
 
