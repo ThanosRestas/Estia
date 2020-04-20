@@ -72,25 +72,57 @@ sceneMeshes.push(ground, boxItem.mesh, box2, box3, box4, box5);
 let pickableMeshes = [];
 pickableMeshes.push(boxItem.mesh, box2, box3, box4, box5);
 
+
+
 let currentActiveGizmo = null; 
-let previousActiveGizmo = null; 
+let currentActiveMesh = null;
+let positionGizmoActive = false;
+let rotationGizmoActive = false;
+let scaleGizmoActive = false;
+
 scene.onPointerObservable.add((pointerInfo) => {
     switch (pointerInfo.type) {
         case BABYLON.PointerEventTypes.POINTERDOWN:
         
             if(pointerInfo.pickInfo.hit != false){
                 if(pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh)){
+                    currentActiveMesh = pointerInfo.pickInfo.pickedMesh;
                     if(currentActiveGizmo != null)
-                    {
+                    {   
+                        // Disable all other gizmos                     
                         currentActiveGizmo.positionGizmo.forEach(element => {
                             element.attachedMesh = null;
-                        });                       
-
+                        }); 
+                        
+                        currentActiveGizmo.rotationGizmo.forEach(element => {
+                            element.attachedMesh = null;
+                        }); 
+                        
+                        // Enable gizmos on new active item
                         currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
+                        positionGizmoActive = true;
+
+                        // Disable the rotation gizmo on new active item |
+                        // making the default, the position one
+                        currentActiveGizmo.rotationGizmo.forEach(element => {
+                            element.attachedMesh = null;
+                        });
+
+                        rotationGizmoActive = false;
                     }
                     else
-                    {                        
+                    {   
+                       
+                        // Enable gizmo on new active item
                         currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
+                        positionGizmoActive = true;
+                        rotationGizmoActive = false;
+
+                        // Disable the rotation gizmo on new active item |
+                        // making the default, the position one
+                        currentActiveGizmo.rotationGizmo.forEach(element => {
+                            element.attachedMesh = null;
+                        });
                     }     
                 }
             }
@@ -117,6 +149,48 @@ scene.onPointerObservable.add((pointerInfo) => {
                 debug = true;
             }
             break;
+
+        case "1":
+            if(positionGizmoActive)
+            {
+                positionGizmoActive = false;
+                
+                currentActiveGizmo.positionGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+            }
+            else
+            {
+              
+            }
+            break;
+
+        case "2":
+            if(rotationGizmoActive)
+            {
+                rotationGizmoActive = false;
+                
+                currentActiveGizmo.rotationGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+            }
+            else
+            {
+                rotationGizmoActive = true;
+                
+
+                // Disable position gizmo
+                currentActiveGizmo.positionGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+
+                // Enable the rotation gizmo on the active item
+                currentActiveGizmo.rotationGizmo.forEach(element => {
+                    element.attachedMesh = currentActiveMesh;
+                }); 
+            }
+            break;
+
         }                
         break;
     }
