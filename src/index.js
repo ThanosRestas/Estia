@@ -161,7 +161,15 @@ scene.onPointerObservable.add((pointerInfo) => {
             }
             else
             {
-              
+                // Disable rotation gizmo
+                currentActiveGizmo.rotationGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+
+                // Enable the position gizmo on the active item
+                currentActiveGizmo.positionGizmo.forEach(element => {
+                    element.attachedMesh = currentActiveMesh;
+                }); 
             }
             break;
 
