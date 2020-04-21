@@ -97,18 +97,27 @@ scene.onPointerObservable.add((pointerInfo) => {
                         currentActiveGizmo.rotationGizmo.forEach(element => {
                             element.attachedMesh = null;
                         }); 
+
+                        currentActiveGizmo.scaleGizmo.forEach(element => {
+                            element.attachedMesh = null;
+                        });
                         
                         // Enable gizmos on new active item
                         currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
                         positionGizmoActive = true;
 
-                        // Disable the rotation gizmo on new active item |
+                        // Disable the rotation and scale gizmo on new active item |
                         // making the default, the position one
                         currentActiveGizmo.rotationGizmo.forEach(element => {
                             element.attachedMesh = null;
                         });
 
+                        currentActiveGizmo.scaleGizmo.forEach(element => {
+                            element.attachedMesh = null;
+                        });
+
                         rotationGizmoActive = false;
+                        scaleGizmoActive = false;
                     }
                     else
                     {   
@@ -117,12 +126,18 @@ scene.onPointerObservable.add((pointerInfo) => {
                         currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
                         positionGizmoActive = true;
                         rotationGizmoActive = false;
+                        scaleGizmoActive = false;
 
-                        // Disable the rotation gizmo on new active item |
+                        // Disable the rotation and gizmo on new active item |
                         // making the default, the position one
                         currentActiveGizmo.rotationGizmo.forEach(element => {
                             element.attachedMesh = null;
                         });
+
+                        currentActiveGizmo.scaleGizmo.forEach(element => {
+                            element.attachedMesh = null;
+                        });
+
                     }     
                 }
             }
@@ -166,6 +181,12 @@ scene.onPointerObservable.add((pointerInfo) => {
                     element.attachedMesh = null;
                 }); 
 
+                // Disable the scale gizmo
+                currentActiveGizmo.scaleGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+
+
                 // Enable the position gizmo on the active item
                 currentActiveGizmo.positionGizmo.forEach(element => {
                     element.attachedMesh = currentActiveMesh;
@@ -192,8 +213,45 @@ scene.onPointerObservable.add((pointerInfo) => {
                     element.attachedMesh = null;
                 }); 
 
+                 // Disable scale gizmo
+                 currentActiveGizmo.scaleGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+
                 // Enable the rotation gizmo on the active item
                 currentActiveGizmo.rotationGizmo.forEach(element => {
+                    element.attachedMesh = currentActiveMesh;
+                }); 
+            }
+            break;
+
+        case "3":
+            if(scaleGizmoActive)
+            {
+                scaleGizmoActive = false;
+                
+                currentActiveGizmo.scaleGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+            }
+            else
+            {
+                scaleGizmoActive = true;
+                
+
+                // Disable position gizmo
+                currentActiveGizmo.positionGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+
+                
+                // Disable rotation gizmo
+                currentActiveGizmo.rotationGizmo.forEach(element => {
+                    element.attachedMesh = null;
+                }); 
+
+                // Enable the scale gizmo on the active item
+                currentActiveGizmo.scaleGizmo.forEach(element => {
                     element.attachedMesh = currentActiveMesh;
                 }); 
             }
