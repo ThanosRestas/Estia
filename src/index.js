@@ -1,7 +1,9 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
-import { Engine } from "@babylonjs/core/Legacy/legacy";
+import { Engine, GizmoManager } from "@babylonjs/core/Legacy/legacy";
 import Item from "./item.js"
 import Gizmo from "./gizmoManager.js"
+import "@babylonjs/loaders/glTF";
+import "@babylonjs/loaders/OBJ";
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new Engine(canvas);
@@ -67,87 +69,131 @@ boxItem.mesh.edgesWidth = 4.0;
 boxItem.mesh.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
 
 var sceneMeshes = [];
-sceneMeshes.push(ground, boxItem.mesh, box2, box3, box4, box5);
-
-let pickableMeshes = [];
-pickableMeshes.push(boxItem.mesh, box2, box3, box4, box5);
-
+sceneMeshes.push(ground);
 
 
 let currentActiveGizmo = null; 
 let currentActiveMesh = null;
 let positionGizmoActive = false;
 let rotationGizmoActive = false;
-let scaleGizmoActive = false;
+let scaleGizmoActive = false; 
 
-scene.onPointerObservable.add((pointerInfo) => {
-    switch (pointerInfo.type) {
-        case BABYLON.PointerEventTypes.POINTERDOWN:
-        
-            if(pointerInfo.pickInfo.hit != false){
-                if(pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh)){
-                    currentActiveMesh = pointerInfo.pickInfo.pickedMesh;
-                    if(currentActiveGizmo != null)
-                    {   
-                        // Disable all other gizmos                     
-                        currentActiveGizmo.positionGizmo.forEach(element => {
-                            element.attachedMesh = null;
-                        }); 
-                        
-                        currentActiveGizmo.rotationGizmo.forEach(element => {
-                            element.attachedMesh = null;
-                        }); 
+let pickableMeshes = [];
+pickableMeshes.push(boxItem.mesh, box2, box3, box4, box5);
 
-                        currentActiveGizmo.scaleGizmo.forEach(element => {
-                            element.attachedMesh = null;
-                        });
-                        
-                        // Enable gizmos on new active item
-                        currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
-                        positionGizmoActive = true;
+let chair = null;
+let  assetsManager = new BABYLON.AssetsManager(scene);  
 
-                        // Disable the rotation and scale gizmo on new active item |
-                        // making the default, the position one
-                        currentActiveGizmo.rotationGizmo.forEach(element => {
-                            element.attachedMesh = null;
-                        });
+assetsManager.onTaskSuccessObservable.add(function(task) {
+    loadingComplete();
+});
 
-                        currentActiveGizmo.scaleGizmo.forEach(element => {
-                            element.attachedMesh = null;
-                        });
+assetsManager.addMeshTask("task1", "", "/assets/", "Chair3.glb");
 
-                        rotationGizmoActive = false;
-                        scaleGizmoActive = false;
-                    }
-                    else
-                    {   
-                       
-                        // Enable gizmo on new active item
-                        currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
-                        positionGizmoActive = true;
-                        rotationGizmoActive = false;
-                        scaleGizmoActive = false;
+// Now let the assetsManager load/excecute every task
+assetsManager.load();
 
-                        // Disable the rotation and gizmo on new active item |
-                        // making the default, the position one
-                        currentActiveGizmo.rotationGizmo.forEach(element => {
-                            element.attachedMesh = null;
-                        });
+function loadingComplete(){
+    //console.log("Mesh loaded !");
+    scene.meshes.forEach(function addToPickableMeshes(item){
+        if(!scene.meshes.includes(item.name)){
+            pickableMeshes.push(item);
+        }
+    })   
+   
+}
 
-                        currentActiveGizmo.scaleGizmo.forEach(element => {
-                            element.attachedMesh = null;
-                        });
 
-                    }     
-                }
-            }
-            break;
-    }
+
+
+
+
+itemPick();
+keyController();
+
+
+
+
+// Render every frame
+engine.runRenderLoop(() => {
+    scene.render();
 });
 
 
+function itemPick(){
+    scene.onPointerObservable.add((pointerInfo) => {
+        switch (pointerInfo.type) {
+            case BABYLON.PointerEventTypes.POINTERDOWN:
+                //console.log(pointerInfo.pickInfo.pickedMesh.name);   
+                //console.log(pickableMeshes);             
+                if(pointerInfo.pickInfo.hit != false){
+                    //console.log(pickableMeshes);
+                    //console.log(pointerInfo.pickInfo.pickedMesh.name.parent)
+                    if(pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh)){
+                        currentActiveMesh = pointerInfo.pickInfo.pickedMesh;
+                        if(currentActiveGizmo != null)
+                        {   
+                            // Disable all other gizmos                     
+                            currentActiveGizmo.positionGizmo.forEach(element => {
+                                element.attachedMesh = null;
+                            }); 
+                            
+                            currentActiveGizmo.rotationGizmo.forEach(element => {
+                                element.attachedMesh = null;
+                            }); 
+    
+                            currentActiveGizmo.scaleGizmo.forEach(element => {
+                                element.attachedMesh = null;
+                            });
+                            
+                            // Enable gizmos on new active item
+                            currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
+                            positionGizmoActive = true;
+    
+                            // Disable the rotation and scale gizmo on new active item |
+                            // making the default, the position one
+                            currentActiveGizmo.rotationGizmo.forEach(element => {
+                                element.attachedMesh = null;
+                            });
+    
+                            currentActiveGizmo.scaleGizmo.forEach(element => {
+                                element.attachedMesh = null;
+                            });
+    
+                            rotationGizmoActive = false;
+                            scaleGizmoActive = false;
+                        }
+                        else
+                        {   
+                           
+                            // Enable gizmo on new active item
+                            currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
+                            positionGizmoActive = true;
+                            rotationGizmoActive = false;
+                            scaleGizmoActive = false;
+    
+                            // Disable the rotation and gizmo on new active item |
+                            // making the default, the position one
+                            currentActiveGizmo.rotationGizmo.forEach(element => {
+                                element.attachedMesh = null;
+                            });
+    
+                            currentActiveGizmo.scaleGizmo.forEach(element => {
+                                element.attachedMesh = null;
+                            });
+    
+                        }     
+                    }
+    
+                    
+                }
+                break;
+        }
+    });
+}
 
- // Key controller
+function keyController(){
+    // Key controller
  scene.onKeyboardObservable.add((kbInfo) => {
     switch (kbInfo.type) {
     case BABYLON.KeyboardEventTypes.KEYDOWN:
@@ -261,10 +307,4 @@ scene.onPointerObservable.add((pointerInfo) => {
         break;
     }
  });
-
-// Render every frame
-engine.runRenderLoop(() => {
-    scene.render();
-});
-
-
+}
