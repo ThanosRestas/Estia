@@ -30,8 +30,8 @@ export default class Gizmo{
 
     createPositionGizmo(axis, color){
         var newGizmo = new BABYLON.AxisDragGizmo(axis, color, this.layer);
-        newGizmo.updateGizmoRotationToMatchAttachedMesh = false;         
-        newGizmo.attachedMesh = this.mesh;1
+        //newGizmo.updateGizmoRotationToMatchAttachedMesh = false;         
+        newGizmo.attachedMesh = this.mesh;
         newGizmo.dragBehavior.onDragObservable.add((event)=>{
             var currentPickedObject = newGizmo.attachedMesh;
             currentPickedObject.computeWorldMatrix();  
@@ -62,7 +62,7 @@ export default class Gizmo{
 
     createRotationGizmo(axis, color){
         var newGizmo = new BABYLON.PlaneRotationGizmo(axis, color, this.layer);   
-        newGizmo.updateGizmoRotationToMatchAttachedMesh = false;     
+        //newGizmo.updateGizmoRotationToMatchAttachedMesh = false;     
         newGizmo.attachedMesh = this.mesh;
         newGizmo.dragBehavior.onDragObservable.add((event)=>{
             var currentPickedObject = newGizmo.attachedMesh;
@@ -95,7 +95,7 @@ export default class Gizmo{
 
     createScaleGizmo(axis, color){
         var newGizmo = new BABYLON.AxisScaleGizmo(axis, color, this.layer);
-        newGizmo.updateGizmoRotationToMatchAttachedMesh = false;     
+        //newGizmo.updateGizmoRotationToMatchAttachedMesh = false;     
         newGizmo.attachedMesh = this.mesh;
         newGizmo.dragBehavior.onDragObservable.add((event)=>{
             var currentPickedObject = newGizmo.attachedMesh;
