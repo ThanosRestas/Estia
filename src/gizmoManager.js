@@ -31,14 +31,14 @@ export default class Gizmo{
     createPositionGizmo(axis, color){
         var newGizmo = new BABYLON.AxisDragGizmo(axis, color, this.layer);
         newGizmo.updateGizmoRotationToMatchAttachedMesh = false;         
-        newGizmo.attachedMesh = this.mesh;
+        newGizmo.attachedMesh = this.mesh;1
         newGizmo.dragBehavior.onDragObservable.add((event)=>{
             var currentPickedObject = newGizmo.attachedMesh;
             currentPickedObject.computeWorldMatrix();  
-            console.log("Started dragging : " + currentPickedObject.name);
+            console.log("Positioning : " + currentPickedObject.name);
             
 
-            // Return the picked object to a position so that it barely touches something 
+            /*// Return the picked object to a position so that it barely touches something 
             if(collisionWithObject(currentPickedObject, this.sceneMeshes)){
                 // Detecting which axis we are moving                 
                 if(axis.x == 1)
@@ -54,7 +54,7 @@ export default class Gizmo{
                     currentPickedObject.position.z -= event.delta.z;  
                 }                
                 currentPickedObject.computeWorldMatrix();                  
-            }
+            }*/
         })
 
         return newGizmo;
@@ -67,7 +67,7 @@ export default class Gizmo{
         newGizmo.dragBehavior.onDragObservable.add((event)=>{
             var currentPickedObject = newGizmo.attachedMesh;
             currentPickedObject.computeWorldMatrix();  
-            console.log("Started rotating : " + currentPickedObject.name);
+            console.log("Rotating : " + currentPickedObject.name);
 
             /*// Return the picked object to a position so that it barely touches something 
             if(collisionWithObject(currentPickedObject, this.sceneMeshes)){
@@ -100,7 +100,7 @@ export default class Gizmo{
         newGizmo.dragBehavior.onDragObservable.add((event)=>{
             var currentPickedObject = newGizmo.attachedMesh;
             currentPickedObject.computeWorldMatrix();  
-            console.log("Started rotating : " + currentPickedObject.name);
+            console.log("Scaling : " + currentPickedObject.name);
 
             /*// Return the picked object to a position so that it barely touches something 
             if(collisionWithObject(currentPickedObject, this.sceneMeshes)){

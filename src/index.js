@@ -99,8 +99,7 @@ function loadingComplete(){
         if(!scene.meshes.includes(item.name)){
             pickableMeshes.push(item);
         }
-    })   
-   
+    })  
 }
 
 
@@ -128,9 +127,19 @@ function itemPick(){
                 //console.log(pickableMeshes);             
                 if(pointerInfo.pickInfo.hit != false){
                     //console.log(pickableMeshes);
-                    //console.log(pointerInfo.pickInfo.pickedMesh.name.parent)
+                    console.log(pointerInfo.pickInfo.pickedMesh.name);
                     if(pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh)){
-                        currentActiveMesh = pointerInfo.pickInfo.pickedMesh;
+
+                        // If gizmo has a parent(mesh is made from multiple parts)
+                        // create gizmo on parent.
+                        if(pointerInfo.pickInfo.pickedMesh.parent){
+                            currentActiveMesh = pointerInfo.pickInfo.pickedMesh.parent;
+                        }
+                        else{
+                            currentActiveMesh = pointerInfo.pickInfo.pickedMesh;
+                        }
+                        
+                        
                         if(currentActiveGizmo != null)
                         {   
                             // Disable all other gizmos                     
@@ -145,9 +154,10 @@ function itemPick(){
                             currentActiveGizmo.scaleGizmo.forEach(element => {
                                 element.attachedMesh = null;
                             });
-                            
+
+                            currentActiveGizmo = new Gizmo(currentActiveMesh, utilLayer, sceneMeshes );
                             // Enable gizmos on new active item
-                            currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
+                            //currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
                             positionGizmoActive = true;
     
                             // Disable the rotation and scale gizmo on new active item |
@@ -167,7 +177,7 @@ function itemPick(){
                         {   
                            
                             // Enable gizmo on new active item
-                            currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
+                            currentActiveGizmo = new Gizmo(currentActiveMesh, utilLayer, sceneMeshes );
                             positionGizmoActive = true;
                             rotationGizmoActive = false;
                             scaleGizmoActive = false;
