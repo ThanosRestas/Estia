@@ -84,11 +84,24 @@ pickableMeshes.push(boxItem.mesh, box2, box3, box4, box5);
 let chair = null;
 let  assetsManager = new BABYLON.AssetsManager(scene);  
 
+var loadButton = document.getElementById('loadFile');
+loadButton.onchange = function(evt){
+
+    var files = evt.target.files;
+    var filename = files[0].name;
+    var blob = new Blob([files[0]]);
+
+    BABYLON.FilesInput.FilesToLoad[filename] = blob;
+
+    assetsManager.addMeshTask(name, "", "file:", filename);
+    assetsManager.load();
+};
+
 assetsManager.onTaskSuccessObservable.add(function(task) {
     loadingComplete();
 });
 
-assetsManager.addMeshTask("task1", "", "/assets/", "Chair3.glb");
+
 
 // Now let the assetsManager load/excecute every task
 assetsManager.load();
