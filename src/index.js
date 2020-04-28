@@ -93,10 +93,10 @@ loadButton.onchange = function(evt){
     
     var blob = new Blob([files[0]]);
 
-    BABYLON.FilesInput.FilesToLoad[filename] = blob;
+    BABYLON.FilesInput.FilesToLoad[filenameLowercase] = blob;
 
     
-    assetsManager.addMeshTask("task1", "", "file:", filename);    
+    assetsManager.addMeshTask("task1", "", "file:", filenameLowercase);    
     assetsManager.load();
 };
 
