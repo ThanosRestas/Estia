@@ -93,10 +93,10 @@ loadButton.onchange = function(evt){
     
     var blob = new Blob([files[0]]);
 
-    BABYLON.FilesInput.FilesToLoad[filenameLowercase] = blob;
+    BABYLON.FilesInput.FilesToLoad[filename] = blob;
 
     
-    assetsManager.addMeshTask("task1", "", "file:", filenameLowercase);    
+    assetsManager.addMeshTask("task1", "", "file:", filename);    
     assetsManager.load();
 };
 
@@ -106,8 +106,15 @@ assetsManager.onTaskSuccessObservable.add(function(task) {
 
 
 
-// Now let the assetsManager load/excecute every task
-assetsManager.load();
+
+var saveButton = document.getElementById('saveScene');
+saveButton.onclick = function(evt){
+    if (confirm('Do you want to download that scene?')) {
+		doDownload('scene', scene);
+	} else {
+	    // Do nothing!
+	}    
+}
 
 function loadingComplete(){
     //console.log("Mesh loaded !");
@@ -118,16 +125,8 @@ function loadingComplete(){
     })  
 }
 
-
-
-
-
-
 itemPick();
 keyController();
-
-
-
 
 // Render every frame
 engine.runRenderLoop(() => {
@@ -333,4 +332,35 @@ function keyController(){
         break;
     }
  });
+}
+
+var objectUrl;
+function doDownload(filename, scene) {
+
+    if(objectUrl) {
+        window.URL.revokeObjectURL(objectUrl);
+    }
+    
+    var serializedScene = BABYLON.SceneSerializer.Serialize(scene);
+        
+    var strMesh = JSON.stringify(serializedScene);
+    //var strMesh = safeJsonStringify(serializedScene);
+    
+    if (filename.toLowerCase().lastIndexOf(".babylon") !== filename.length - 8 || filename.length < 9){
+        filename += ".babylon";
+    }
+            
+	var blob = new Blob ( [ strMesh ], { type : "octet/stream" } );
+       
+    // turn blob into an object URL; saved as a member, so can be cleaned out later
+    objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
+    
+    var link = window.document.createElement('a');
+    link.href = objectUrl;
+    link.download = filename;
+    var click = document.createEvent("MouseEvents");
+    click.initEvent("click", true, false);
+    link.dispatchEvent(click);        
+    
+    
 }
