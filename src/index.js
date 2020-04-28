@@ -58,7 +58,7 @@ box5.position.z = -2;
 box5.position.y = box5.scaling.y / 2;
 
 // Color the box black
-var material = new BABYLON.StandardMaterial(scene);
+var material = new BABYLON.StandardMaterial("mainBox", scene);
 material.alpha = 1;
 material.diffuseColor = new BABYLON.Color3(0, 0, 0);
 boxItem.mesh.material = material;
