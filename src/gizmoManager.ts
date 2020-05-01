@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Mesh, UtilityLayerRenderer, AxisDragGizmo, AxisScaleGizmo, Vector3, Color3, PlaneRotationGizmo, TransformNode, Axis } from '@babylonjs/core';
 
-export default class Gizmo {
+export default class CustomGizmo {
     name : string;
     mesh : Mesh;
     

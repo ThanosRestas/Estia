@@ -1,33 +1,31 @@
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
-
 import '@babylonjs/core/Meshes/meshBuilder';
-
 import Gizmo from './gizmoManager';
 import '@babylonjs/loaders/glTF';
 import '@babylonjs/loaders/OBJ';
+import  itemPick from './itemPICK';
+import  keyController from './KeyController';
+import ActiveEntityManager from './ActiveEntityManager';
 
-const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
-const engine = new BABYLON.Engine(canvas);
-
-// This creates a basic Babylon Scene object (non-mesh)
-var scene = new BABYLON.Scene(engine);
-
-// This creates and positions a free camera (non-mesh)
-var camera = new BABYLON.ArcRotateCamera('Camera', -2.53, 0.95, 25, new BABYLON.Vector3(0, 0, 0), scene);
+// Basic scene setup
+export const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
+export const engine = new BABYLON.Engine(canvas);
+export const scene = new BABYLON.Scene(engine);
+const camera = new BABYLON.ArcRotateCamera('Camera', -2.53, 0.95, 25, new BABYLON.Vector3(0, 0, 0), scene);
 
 // This attaches the camera to the canvas
 camera.attachControl(canvas, true);
 
 // Wether debugging BabylonJS Inspector is enabled
-var debug = false;
+let debug = false;
 
 // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-var light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
+const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);
 // Default intensity is 1. Let's dim the light a small amount
 light.intensity = 1;
 
 // Layer that gizmos live
-var utilLayer = new BABYLON.UtilityLayerRenderer(scene);
+export const utilLayer = new BABYLON.UtilityLayerRenderer(scene);
 
 // Create the floor mesh that is exempt from the gizmo list == unmovable obviously
 var ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 6, height: 6 }, scene);
@@ -71,13 +69,8 @@ boxItem.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
 var sceneMeshes = [];
 sceneMeshes.push(ground);
 
-let currentActiveGizmo = null;
-let currentActiveMesh = null;
-let positionGizmoActive = false;
-let rotationGizmoActive = false;
-let scaleGizmoActive = false;
 
-const pickableMeshes = [];
+export const pickableMeshes = [];
 pickableMeshes.push(boxItem, box2, box3, box4, box5);
 
 const assetsManager = new BABYLON.AssetsManager(scene);
@@ -112,14 +105,14 @@ saveButton.onclick = function () {
 
 const deleteButton = document.getElementById('delete');
 deleteButton.onclick = function() {
-  currentActiveMesh.dispose();
-  currentActiveGizmo.positionGizmo.forEach(element => {
+  ActiveEntityManager.currentActiveMesh.dispose();
+  ActiveEntityManager.currentActiveGizmo.positionGizmo.forEach(element => {
     element.attachedMesh = null;
   });
-  currentActiveGizmo.rotationGizmo.forEach(element => {
+  ActiveEntityManager.currentActiveGizmo.rotationGizmo.forEach(element => {
     element.attachedMesh = null;
   });
-  currentActiveGizmo.scaleGizmo.forEach(element => {
+  ActiveEntityManager.currentActiveGizmo.scaleGizmo.forEach(element => {
     element.attachedMesh = null;
   });
 }
@@ -142,176 +135,6 @@ engine.runRenderLoop(() => {
   scene.render();
 });
 
-function itemPick () {
-  scene.onPointerObservable.add((pointerInfo) => {
-    switch (pointerInfo.type) {
-      case BABYLON.PointerEventTypes.POINTERDOWN:
-        if (pointerInfo.pickInfo.hit !== false) {          
-          if (pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh)) {
-            // If gizmo has a parent(mesh is made from multiple parts)
-            // create gizmo on parent.
-            if (pointerInfo.pickInfo.pickedMesh.parent != null) {
-              currentActiveMesh = pointerInfo.pickInfo.pickedMesh.parent as BABYLON.Mesh;
-            } else {
-              currentActiveMesh = pointerInfo.pickInfo.pickedMesh;
-            }
-
-            if (currentActiveGizmo != null) {
-              // Disable all other gizmos
-              currentActiveGizmo.positionGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              currentActiveGizmo.rotationGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              currentActiveGizmo.scaleGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              currentActiveGizmo = new Gizmo(currentActiveMesh, utilLayer);
-              // Enable gizmos on new active item
-              // currentActiveGizmo = new Gizmo(pointerInfo.pickInfo.pickedMesh, utilLayer, sceneMeshes );
-              positionGizmoActive = true;
-
-              // Disable the rotation and scale gizmo on new active item |
-              // making the default, the position one
-              currentActiveGizmo.rotationGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              currentActiveGizmo.scaleGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              rotationGizmoActive = false;
-              scaleGizmoActive = false;
-            } else {
-              // Enable gizmo on new active item
-              currentActiveGizmo = new Gizmo(currentActiveMesh, utilLayer);
-              positionGizmoActive = true;
-              rotationGizmoActive = false;
-              scaleGizmoActive = false;
-
-              // Disable the rotation and gizmo on new active item |
-              // making the default, the position one
-              currentActiveGizmo.rotationGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              currentActiveGizmo.scaleGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-            }
-          }
-        }
-        break;
-    }
-  });
-}
-
-function keyController () {
-  // Key controller
-  scene.onKeyboardObservable.add((kbInfo) => {
-    switch (kbInfo.type) {
-      case BABYLON.KeyboardEventTypes.KEYDOWN:
-        switch (kbInfo.event.key) {
-        // The button to enable the BabylonJS Inspector
-          case '`':
-            console.log('Debug mode enabled');
-            if (debug) {
-              scene.debugLayer.hide();
-              debug = false;
-            } else {
-              scene.debugLayer.show();
-              debug = true;
-            }
-            break;
-
-          case '1':
-            if (positionGizmoActive) {
-              positionGizmoActive = false;
-
-              currentActiveGizmo.positionGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-            } else {
-              // Disable rotation gizmo
-              currentActiveGizmo.rotationGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              // Disable the scale gizmo
-              currentActiveGizmo.scaleGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              // Enable the position gizmo on the active item
-              currentActiveGizmo.positionGizmo.forEach(element => {
-                element.attachedMesh = currentActiveMesh;
-              });
-            }
-            break;
-
-          case '2':
-            if (rotationGizmoActive) {
-              rotationGizmoActive = false;
-
-              currentActiveGizmo.rotationGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-            } else {
-              rotationGizmoActive = true;
-
-              // Disable position gizmo
-              currentActiveGizmo.positionGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              // Disable scale gizmo
-              currentActiveGizmo.scaleGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              // Enable the rotation gizmo on the active item
-              currentActiveGizmo.rotationGizmo.forEach(element => {
-                element.attachedMesh = currentActiveMesh;
-              });
-            }
-            break;
-
-          case '3':
-            if (scaleGizmoActive) {
-              scaleGizmoActive = false;
-
-              currentActiveGizmo.scaleGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-            } else {
-              scaleGizmoActive = true;
-
-              // Disable position gizmo
-              currentActiveGizmo.positionGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              // Disable rotation gizmo
-              currentActiveGizmo.rotationGizmo.forEach(element => {
-                element.attachedMesh = null;
-              });
-
-              // Enable the scale gizmo on the active item
-              currentActiveGizmo.scaleGizmo.forEach(element => {
-                element.attachedMesh = currentActiveMesh;
-              });
-            }
-            break;
-        }
-        break;
-    }
-  });
-}
 
 var objectUrl: string;
 function doDownload (filename, scene) {
