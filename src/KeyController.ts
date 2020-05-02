@@ -1,9 +1,11 @@
-import {canvas, engine, scene} from './index';
+import {canvas, engine, scene, utilLayer} from './index';
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 import ActiveEntityManager from './ActiveEntityManager';
+import CustomGizmo from './gizmoManager';
+import { AxisDragGizmo, PlaneRotationGizmo, AxisScaleGizmo } from '@babylonjs/core/Legacy/legacy';
 
 
-export default function keyController () {
+ export default function keyController () {
     // Key controller
     scene.onKeyboardObservable.add((kbInfo) => {
       switch (kbInfo.type) {
@@ -22,85 +24,28 @@ export default function keyController () {
               break;
   
             case '1':
-              if (ActiveEntityManager.positionGizmoActive) {
-                ActiveEntityManager.positionGizmoActive = false;
-  
-                ActiveEntityManager.currentActiveGizmo.positionGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-              } else {
-                // Disable rotation gizmo
-                ActiveEntityManager.currentActiveGizmo.rotationGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-  
-                // Disable the scale gizmo
-                ActiveEntityManager.currentActiveGizmo.scaleGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-  
-                // Enable the position gizmo on the active item
-                ActiveEntityManager.currentActiveGizmo.positionGizmo.forEach(element => {
-                  element.attachedMesh = ActiveEntityManager.currentActiveMesh;
-                });
-              }
+              // Turn off Rotation-Scale
+              ActiveEntityManager.currentActiveGizmo.disable();  
+              ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, AxisDragGizmo);
+        
+              // Switch on Position
               break;
   
             case '2':
-              if (ActiveEntityManager.rotationGizmoActive) {
-                ActiveEntityManager.rotationGizmoActive = false;
-  
-                ActiveEntityManager.currentActiveGizmo.rotationGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-              } else {
-                ActiveEntityManager.rotationGizmoActive = true;
-  
-                // Disable position gizmo
-                ActiveEntityManager.currentActiveGizmo.positionGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-  
-                // Disable scale gizmo
-                ActiveEntityManager.currentActiveGizmo.scaleGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-  
-                // Enable the rotation gizmo on the active item
-                ActiveEntityManager.currentActiveGizmo.rotationGizmo.forEach(element => {
-                  element.attachedMesh = ActiveEntityManager.currentActiveMesh;
-                });
-              }
+              // Turn off Positon-Scale
+              ActiveEntityManager.currentActiveGizmo.disable();  
+              ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, PlaneRotationGizmo);
+              // Switch on Rotation
               break;
   
             case '3':
-              if (ActiveEntityManager.scaleGizmoActive) {
-                ActiveEntityManager.scaleGizmoActive = false;
-  
-                ActiveEntityManager.currentActiveGizmo.scaleGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-              } else {
-                ActiveEntityManager.scaleGizmoActive = true;
-  
-                // Disable position gizmo
-                ActiveEntityManager.currentActiveGizmo.positionGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-  
-                // Disable rotation gizmo
-                ActiveEntityManager.currentActiveGizmo.rotationGizmo.forEach(element => {
-                  element.attachedMesh = null;
-                });
-  
-                // Enable the scale gizmo on the active item
-                ActiveEntityManager.currentActiveGizmo.scaleGizmo.forEach(element => {
-                  element.attachedMesh = ActiveEntityManager.currentActiveMesh;
-                });
-              }
+              // Turn off Position-Rotation
+              ActiveEntityManager.currentActiveGizmo.disable();  
+              ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, AxisScaleGizmo);
+              // Switch on Scale
               break;
           }
           break;
       }
     });
-  }
+}

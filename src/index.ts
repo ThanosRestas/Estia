@@ -1,11 +1,12 @@
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 import '@babylonjs/core/Meshes/meshBuilder';
-import Gizmo from './gizmoManager';
 import '@babylonjs/loaders/glTF';
 import '@babylonjs/loaders/OBJ';
 import  itemPick from './itemPICK';
 import  keyController from './KeyController';
 import ActiveEntityManager from './ActiveEntityManager';
+import CustomGizmo from './gizmoManager';
+import { AxisDragGizmo, PlaneRotationGizmo } from '@babylonjs/core/Legacy/legacy';
 
 // Basic scene setup
 export const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
@@ -69,63 +70,13 @@ boxItem.edgesColor = new BABYLON.Color4(0.05, 1, 0.02);
 var sceneMeshes = [];
 sceneMeshes.push(ground);
 
-
 export const pickableMeshes = [];
 pickableMeshes.push(boxItem, box2, box3, box4, box5);
 
-const assetsManager = new BABYLON.AssetsManager(scene);
+// var position = new CustomGizmo(box5, utilLayer, AxisDragGizmo);
+// var rotation = new CustomGizmo(box5, utilLayer, PlaneRotationGizmo);
 
-const loadButton = document.getElementById('loadFile');
-loadButton.onchange = function (evt) {
-  const files = (<HTMLInputElement>evt.target).files;
-  const filename = files[0].name;
-  const filenameLowercase = filename.toLowerCase();
-
-  const blob = new Blob([files[0]]);
-
-  BABYLON.FilesInput.FilesToLoad[filenameLowercase] = blob as File;
-
-  assetsManager.addMeshTask('task1', '', 'file:', filenameLowercase);
-  assetsManager.load();
-};
-
-assetsManager.onTaskSuccessObservable.add(function () {
-  loadingComplete();
-});
-
-const saveButton = document.getElementById('saveScene');
-saveButton.onclick = function () {
-  if (confirm('Do you want to download that scene?')) {
-    doDownload('scene', scene);
-  } else {
-    // Do nothing!
-    console.log('Save canceled.');
-  }
-};
-
-const deleteButton = document.getElementById('delete');
-deleteButton.onclick = function() {
-  ActiveEntityManager.currentActiveMesh.dispose();
-  ActiveEntityManager.currentActiveGizmo.positionGizmo.forEach(element => {
-    element.attachedMesh = null;
-  });
-  ActiveEntityManager.currentActiveGizmo.rotationGizmo.forEach(element => {
-    element.attachedMesh = null;
-  });
-  ActiveEntityManager.currentActiveGizmo.scaleGizmo.forEach(element => {
-    element.attachedMesh = null;
-  });
-}
-
-
-function loadingComplete () {
-  // console.log("Mesh loaded !");
-  scene.meshes.forEach(function addToPickableMeshes (item) {
-    if (!pickableMeshes.includes(item) && item != ground) {
-      pickableMeshes.push(item);
-    }
-  });
-}
+// position.disable();
 
 itemPick();
 keyController();
@@ -136,30 +87,3 @@ engine.runRenderLoop(() => {
 });
 
 
-var objectUrl: string;
-function doDownload (filename, scene) {
-  if (objectUrl) {
-    window.URL.revokeObjectURL(objectUrl);
-  }
-
-  var serializedScene = BABYLON.SceneSerializer.Serialize(scene);
-
-  var strMesh = JSON.stringify(serializedScene);
-  // var strMesh = safeJsonStringify(serializedScene);
-
-  if (filename.toLowerCase().lastIndexOf('.babylon') !== filename.length - 8 || filename.length < 9) {
-    filename += '.babylon';
-  }
-
-  var blob = new Blob([strMesh], { type: 'octet/stream' });
-
-  // turn blob into an object URL; saved as a member, so can be cleaned out later
-  objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
-
-  var link = window.document.createElement('a');
-  link.href = objectUrl;
-  link.download = filename;
-  var click = document.createEvent('MouseEvents');
-  click.initEvent('click', true, false);
-  link.dispatchEvent(click);
-}
