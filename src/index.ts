@@ -1,26 +1,21 @@
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 import '@babylonjs/core/Meshes/meshBuilder';
-import '@babylonjs/loaders/glTF';
-import '@babylonjs/loaders/OBJ';
 import  itemPick from './itemPICK';
 import  keyController from './KeyController';
-import ActiveEntityManager from './ActiveEntityManager';
-import CustomGizmo from './gizmoManager';
-import { AxisDragGizmo, PlaneRotationGizmo } from '@babylonjs/core/Legacy/legacy';
 import * as UI from './SaveLoadManager';
 
 // Basic scene setup
 export const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 export const engine = new BABYLON.Engine(canvas);
 export const scene = new BABYLON.Scene(engine);
-const camera = new BABYLON.ArcRotateCamera('Camera', -2.53, 0.95, 25, new BABYLON.Vector3(0, 0, 0), scene);
 export const assetsManager = new BABYLON.AssetsManager(scene);
+const camera = new BABYLON.ArcRotateCamera('Camera', -2.53, 0.95, 25, new BABYLON.Vector3(0, 0, 0), scene);
+
 
 // This attaches the camera to the canvas
 camera.attachControl(canvas, true);
 
-// Wether debugging BabylonJS Inspector is enabled
-let debug = false;
+
 
 // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
 const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(0, 1, 0), scene);

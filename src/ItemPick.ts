@@ -2,8 +2,8 @@ import {canvas, engine, scene} from './index';
 import {utilLayer} from './index';
 import {pickableMeshes} from './index';
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
-import { Gizmo, AxisDragGizmo } from '@babylonjs/core/Legacy/legacy';
-import CustomGizmo from './gizmoManager';
+import { Gizmo, AxisDragGizmo, AxisScaleGizmo } from '@babylonjs/core/Legacy/legacy';
+import CustomGizmo from './GizmoManager';
 import ActiveEntityManager from './ActiveEntityManager';
 
 
@@ -27,7 +27,7 @@ export default function itemPick () {
               if (ActiveEntityManager.currentActiveGizmo != null) {
                 // Disable all other gizmos
                 ActiveEntityManager.currentActiveGizmo.disable();  
-                ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, AxisDragGizmo);
+                ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, AxisScaleGizmo);
           
               } 
               else 
