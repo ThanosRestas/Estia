@@ -1,32 +1,17 @@
-import * as BABYLON from '@babylonjs/core/Legacy/legacy';
-import '@babylonjs/loaders/glTF';
-import '@babylonjs/loaders/OBJ';
-import {canvas, engine, scene, pickableMeshes} from './index';
-import ActiveEntityManager from './ActiveEntityManager';
+import * as BABYLON from "@babylonjs/core/Legacy/legacy";
+import "@babylonjs/loaders/glTF";
+import "@babylonjs/loaders/OBJ";
+import {assetsManager,scene, pickableMeshes } from "./index";
+import ActiveEntityManager from "./ActiveEntityManager";
 
-const assetsManager = new BABYLON.AssetsManager(scene);
-const loadButton = document.getElementById('loadFile');
-const saveButton = document.getElementById('saveScene');
-const deleteButton = document.getElementById('delete');
+//export let assetsManager = new BABYLON.AssetsManager(scene);
+export const loadButton = document.getElementById("loadFile");
+export const saveButton = document.getElementById("saveScene");
+export const deleteButton = document.getElementById("delete");
+// const assetsManager = new BABYLON.AssetsManager(scene);
 var objectUrl: string;
 
-loadButton.onchange = function (evt) {
-  const files = (<HTMLInputElement>evt.target).files;
-  const filename = files[0].name;
-  const filenameLowercase = filename.toLowerCase();
 
-  const blob = new Blob([files[0]]);
-
-  BABYLON.FilesInput.FilesToLoad[filenameLowercase] = blob as File;
-
-  assetsManager.addMeshTask('task1', '', 'file:', filenameLowercase);
-  assetsManager.load();
-};
-
-assetsManager.onTaskSuccessObservable.add(function () {
-    loadingComplete();
-  });
-  
 saveButton.onclick = function () {
   if (confirm('Do you want to download that scene?')) {
     doDownload('scene', scene);
@@ -36,14 +21,6 @@ saveButton.onclick = function () {
   }
 };
 
-function loadingComplete () {
-    // console.log("Mesh loaded !");
-    scene.meshes.forEach(function addToPickableMeshes (item) {
-      if (!pickableMeshes.includes(item) && item.name != 'ground') {
-        pickableMeshes.push(item);
-      }
-    });
-  }
 
 
 function doDownload (filename, scene) {
@@ -73,7 +50,33 @@ function doDownload (filename, scene) {
   link.dispatchEvent(click);
 }
 
-deleteButton.onclick = function() {
-    ActiveEntityManager.currentActiveMesh.dispose();   
-}
-  
+
+deleteButton.onclick = function ()
+{
+    ActiveEntityManager.currentActiveMesh.dispose();
+    ActiveEntityManager.currentActiveGizmo.disable();
+    console.log("Test");
+};
+
+
+
+loadButton.onchange = function (evt) {
+  const files = (<HTMLInputElement>evt.target).files;
+  const filename = files[0].name;
+  const filenameLowercase = filename.toLowerCase();
+
+  const blob = new Blob([files[0]]);
+
+  BABYLON.FilesInput.FilesToLoad[filenameLowercase] = blob as File;
+
+  let task = assetsManager.addMeshTask('task1', '', 'file:', filenameLowercase);
+  assetsManager.load();
+  task.onSuccess = function ( task ){
+    task.loadedMeshes.forEach(mesh => {
+       pickableMeshes.push(mesh);
+    });    
+  }  
+};
+
+
+

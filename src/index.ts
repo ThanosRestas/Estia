@@ -7,12 +7,14 @@ import  keyController from './KeyController';
 import ActiveEntityManager from './ActiveEntityManager';
 import CustomGizmo from './gizmoManager';
 import { AxisDragGizmo, PlaneRotationGizmo } from '@babylonjs/core/Legacy/legacy';
+import * as UI from './SaveLoadManager';
 
 // Basic scene setup
 export const canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 export const engine = new BABYLON.Engine(canvas);
 export const scene = new BABYLON.Scene(engine);
 const camera = new BABYLON.ArcRotateCamera('Camera', -2.53, 0.95, 25, new BABYLON.Vector3(0, 0, 0), scene);
+export const assetsManager = new BABYLON.AssetsManager(scene);
 
 // This attaches the camera to the canvas
 camera.attachControl(canvas, true);
@@ -73,10 +75,11 @@ sceneMeshes.push(ground);
 export const pickableMeshes = [];
 pickableMeshes.push(boxItem, box2, box3, box4, box5);
 
-// var position = new CustomGizmo(box5, utilLayer, AxisDragGizmo);
-// var rotation = new CustomGizmo(box5, utilLayer, PlaneRotationGizmo);
 
-// position.disable();
+// User Interface buttons
+UI.saveButton;
+UI.deleteButton;
+UI.loadButton;
 
 itemPick();
 keyController();
@@ -85,5 +88,4 @@ keyController();
 engine.runRenderLoop(() => {
   scene.render();
 });
-
 
