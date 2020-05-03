@@ -8,10 +8,7 @@ export default class CustomGizmo
     mesh: Mesh;
     layer: UtilityLayerRenderer;
     type: Gizmo;
-    gizmoX: Gizmo;
-    gizmoY: Gizmo;
-    gizmoZ: Gizmo;
-    gizmo = [this.gizmoX, this.gizmoY, this.gizmoZ];
+    gizmo = [];
     axis = [Axis.X, Axis.Y, Axis.Z];
     color = [Color3.Red(), Color3.Yellow(), Color3.Blue()];
 

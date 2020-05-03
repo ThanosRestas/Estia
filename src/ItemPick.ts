@@ -27,7 +27,7 @@ export default function itemPick () {
               if (ActiveEntityManager.currentActiveGizmo != null) {
                 // Disable all other gizmos
                 ActiveEntityManager.currentActiveGizmo.disable();  
-                ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, AxisScaleGizmo);
+                ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, AxisDragGizmo);
           
               } 
               else 
