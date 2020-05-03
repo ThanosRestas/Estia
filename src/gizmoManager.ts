@@ -5,12 +5,12 @@ import { Mesh, UtilityLayerRenderer, AxisDragGizmo, AxisScaleGizmo, Vector3, Col
 export default class CustomGizmo
 {
 
-    mesh: Mesh;
-    layer: UtilityLayerRenderer;
-    type: Gizmo;
-    gizmo = [];
-    axis = [Axis.X, Axis.Y, Axis.Z];
-    color = [Color3.Red(), Color3.Yellow(), Color3.Blue()];
+    private mesh: Mesh;
+    private layer: UtilityLayerRenderer;
+    private type: Gizmo;
+    private gizmo = [];
+    private readonly axis = [Axis.X, Axis.Y, Axis.Z];
+    private readonly color = [Color3.Red(), Color3.Yellow(), Color3.Blue()];
 
     //Available types == AxisDragGizmo / PlaneRotationGizmo / AxisScaleGizmo;  
     constructor(mesh: Mesh, layer: UtilityLayerRenderer, type)
@@ -18,8 +18,8 @@ export default class CustomGizmo
         this.mesh = mesh;
         this.layer = layer;
         this.type = type;
-
         this.create(this.type);
+
     }
 
     create(type)
