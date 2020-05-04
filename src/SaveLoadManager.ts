@@ -3,6 +3,7 @@ import "@babylonjs/loaders/glTF";
 import "@babylonjs/loaders/OBJ";
 import { assetsManager, scene, pickableMeshes } from "./index";
 import ActiveEntityManager from "./ActiveEntityManager";
+import { TransformNode } from "@babylonjs/core/Legacy/legacy";
 
 export const loadButton = document.getElementById("loadFile");
 export const saveButton = document.getElementById("saveScene");
@@ -35,9 +36,13 @@ loadButton.onchange = function (evt)
   assetsManager.load();
   task.onSuccess = function (task)
   {
+    // Temporary parent for non parented meshes for easy gizmo pick
+    let parentTemp = new BABYLON.TransformNode("parentTemp");
     task.loadedMeshes.forEach(mesh =>
     {
-      pickableMeshes.push(mesh);
+      pickableMeshes.push(mesh);      
+      // Assign temp parent
+      mesh.parent = parentTemp;
     });
   }
 };

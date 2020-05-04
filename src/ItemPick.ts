@@ -13,18 +13,20 @@ export default function itemPick () {
       switch (pointerInfo.type) {
         case BABYLON.PointerEventTypes.POINTERDOWN:
           if (pointerInfo.pickInfo.hit !== false) {          
-            if (pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh)) {
+            if (pickableMeshes.includes(pointerInfo.pickInfo.pickedMesh))
+            {
               // If gizmo has a parent(mesh is made from multiple parts)
               // create gizmo on parent.
               if (pointerInfo.pickInfo.pickedMesh.parent != null) {
-               ActiveEntityManager.currentActiveMesh = pointerInfo.pickInfo.pickedMesh.parent as BABYLON.Mesh;
+              ActiveEntityManager.currentActiveMesh = pointerInfo.pickInfo.pickedMesh.parent as BABYLON.Mesh;
               } 
               else 
               {
                 ActiveEntityManager.currentActiveMesh = pointerInfo.pickInfo.pickedMesh as BABYLON.Mesh ;
               } 
   
-              if (ActiveEntityManager.currentActiveGizmo != null) {
+              if (ActiveEntityManager.currentActiveGizmo != null) 
+              {
                 // Disable all other gizmos
                 ActiveEntityManager.currentActiveGizmo.disable();  
                 ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, AxisDragGizmo);
@@ -34,7 +36,7 @@ export default function itemPick () {
               {
                 // Enable gizmo on new active item
                 ActiveEntityManager.currentActiveGizmo = new CustomGizmo(ActiveEntityManager.currentActiveMesh, utilLayer, AxisDragGizmo);
-            }
+              }
             }
           }
           break;

@@ -6,7 +6,7 @@ export default class CustomGizmo
 {
 
     private mesh: Mesh;
-    private layer: UtilityLayerRenderer;
+    private layer: UtilityLayerRenderer
     private type: Gizmo;
     private gizmo = [];
     private readonly axis = [Axis.X, Axis.Y, Axis.Z];
