@@ -3,7 +3,7 @@ import "@babylonjs/loaders/glTF";
 import "@babylonjs/loaders/OBJ";
 import { assetsManager, scene, pickableMeshes } from "./index";
 import ActiveEntityManager from "./ActiveEntityManager";
-import { TransformNode } from "@babylonjs/core/Legacy/legacy";
+
 
 export const loadButton = document.getElementById("loadFile");
 export const saveButton = document.getElementById("saveScene");
@@ -13,17 +13,18 @@ export const deleteButton = document.getElementById("delete");
 class SaveLoadManager
 {
   private static objectUrl: string;
-  private static saveFileName: string = 'scene';
+  private static saveFileName = 'scene';
+  
 
-  static save()
+  static save(): void
   {
     if (SaveLoadManager.objectUrl)
     {
       window.URL.revokeObjectURL(SaveLoadManager.objectUrl);
     }
 
-    var serializedScene = BABYLON.SceneSerializer.Serialize(scene);
-    var strMesh = JSON.stringify(serializedScene);
+    const serializedScene = BABYLON.SceneSerializer.Serialize(scene);
+    const strMesh = JSON.stringify(serializedScene);
 
 
 
@@ -32,45 +33,45 @@ class SaveLoadManager
       SaveLoadManager.saveFileName += '.babylon';
     }
 
-    var blob = new Blob([strMesh], { type: 'octet/stream' });
+    const blob = new Blob([strMesh], { type: 'octet/stream' });
 
     // Turn blob into an object URL; saved as a member, so can be cleaned out later
     SaveLoadManager.objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
 
-    var link = window.document.createElement('a');
+    const link = window.document.createElement('a');
     link.href = SaveLoadManager.objectUrl;
     link.download = SaveLoadManager.saveFileName;
-    var click = document.createEvent('MouseEvents');
+    const click = document.createEvent('MouseEvents');
     click.initEvent('click', true, false);
     link.dispatchEvent(click);
   }
 
 
-  static load(this: HTMLElement, evt: Event)
+  static load(this: HTMLElement, evt: Event): void
   {
-    const files = (<HTMLInputElement>evt.target).files;
+    const files = (evt.target as HTMLInputElement).files;
     const filename = files[0].name.toLowerCase();
 
     const blob = new Blob([files[0]]);
 
     BABYLON.FilesInput.FilesToLoad[filename] = blob as File;
 
-    let task = assetsManager.addMeshTask('task1', '', 'file:', filename);
+    const task = assetsManager.addMeshTask('task1', '', 'file:', filename);
     assetsManager.load();
-    task.onSuccess = function (task)
+    task.onSuccess = function (task): void
     {
       // Temporary parent for non parented meshes for easy gizmo pick
-      let parentTemp = new BABYLON.TransformNode("parentTemp");
+      const parentTemp = new BABYLON.TransformNode("parentTemp");
       task.loadedMeshes.forEach(mesh =>
       {
         pickableMeshes.push(mesh);
         // Assign temp parent
         mesh.parent = parentTemp;
       });
-    }
+    };
   }
 
-  static delete()
+  static delete(): void
   {
     ActiveEntityManager.currentActiveMesh.dispose();
     ActiveEntityManager.currentActiveGizmo.disable();
