@@ -1,14 +1,14 @@
-import { canvas, engine, scene } from './index';
+import {scene } from './index';
 import { utilLayer } from './index';
 import { pickableMeshes } from './index';
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
-import { Gizmo, AxisDragGizmo, AxisScaleGizmo } from '@babylonjs/core/Legacy/legacy';
+import {AxisDragGizmo} from '@babylonjs/core/Legacy/legacy';
 import CustomGizmo from './GizmoManager';
 import ActiveEntityManager from './ActiveEntityManager';
 
 
 
-export default function itemPick()
+export default function itemPick(): void
 {
   scene.onPointerObservable.add((pointerInfo) =>
   {

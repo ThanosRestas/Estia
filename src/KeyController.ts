@@ -1,4 +1,4 @@
-import { canvas, engine, scene, utilLayer } from "./index";
+import {scene, utilLayer } from "./index";
 import * as BABYLON from "@babylonjs/core/Legacy/legacy";
 import ActiveEntityManager from "./ActiveEntityManager";
 import CustomGizmo from "./GizmoManager";
@@ -8,7 +8,8 @@ import {
   AxisScaleGizmo,
 } from "@babylonjs/core/Legacy/legacy";
 
-export default function keyController() {
+export default function keyController(): void 
+{
   // Key controller
   scene.onKeyboardObservable.add((kbInfo) => {
     switch (kbInfo.type) {
