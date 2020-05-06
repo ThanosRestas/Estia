@@ -12,50 +12,55 @@ export const deleteButton = document.getElementById("delete");
 
 class SaveLoadManager
 {
+  private static objectUrl: string;
+  private static saveFileName: string = 'scene';
+
   static save()
   {
-    let objectUrl: string;
-    let filename = 'scene';
+    //let objectUrl: string;
 
-    if (objectUrl)
+    console.log(SaveLoadManager.saveFileName);
+
+
+    if (SaveLoadManager.objectUrl)
     {
-      window.URL.revokeObjectURL(objectUrl);
+      window.URL.revokeObjectURL(SaveLoadManager.objectUrl);
     }
 
     var serializedScene = BABYLON.SceneSerializer.Serialize(scene);
-
     var strMesh = JSON.stringify(serializedScene);
-    // var strMesh = safeJsonStringify(serializedScene);
 
-    if (filename.toLowerCase().lastIndexOf('.babylon') !== filename.length - 8 || filename.length < 9)
+
+
+    if (SaveLoadManager.saveFileName.toLowerCase().lastIndexOf('.babylon') !== SaveLoadManager.saveFileName.length - 8 || SaveLoadManager.saveFileName.length < 9)
     {
-      filename += '.babylon';
+      SaveLoadManager.saveFileName += '.babylon';
     }
 
     var blob = new Blob([strMesh], { type: 'octet/stream' });
 
-    // turn blob into an object URL; saved as a member, so can be cleaned out later
-    objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
+    // Turn blob into an object URL; saved as a member, so can be cleaned out later
+    SaveLoadManager.objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
 
     var link = window.document.createElement('a');
-    link.href = objectUrl;
-    link.download = filename;
+    link.href = SaveLoadManager.objectUrl;
+    link.download = SaveLoadManager.saveFileName;
     var click = document.createEvent('MouseEvents');
     click.initEvent('click', true, false);
     link.dispatchEvent(click);
   }
 
 
-  static load(this : HTMLElement, evt : Event )
+  static load(this: HTMLElement, evt: Event)
   {
     const files = (<HTMLInputElement>evt.target).files;
-    const filename = files[0].name;
-    const filenameLowercase = filename.toLowerCase();
+    const filename = files[0].name.toLowerCase();
+
     const blob = new Blob([files[0]]);
 
-    BABYLON.FilesInput.FilesToLoad[filenameLowercase] = blob as File;
+    BABYLON.FilesInput.FilesToLoad[filename] = blob as File;
 
-    let task = assetsManager.addMeshTask('task1', '', 'file:', filenameLowercase);
+    let task = assetsManager.addMeshTask('task1', '', 'file:', filename);
     assetsManager.load();
     task.onSuccess = function (task)
     {
