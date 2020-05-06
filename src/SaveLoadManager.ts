@@ -17,11 +17,6 @@ class SaveLoadManager
 
   static save()
   {
-    //let objectUrl: string;
-
-    console.log(SaveLoadManager.saveFileName);
-
-
     if (SaveLoadManager.objectUrl)
     {
       window.URL.revokeObjectURL(SaveLoadManager.objectUrl);
