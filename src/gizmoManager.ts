@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Mesh, UtilityLayerRenderer, AxisDragGizmo, AxisScaleGizmo, Vector3, Color3, PlaneRotationGizmo, TransformNode, Axis, Gizmo } from '@babylonjs/core';
+import { Mesh, UtilityLayerRenderer, Color3, Axis, Gizmo } from '@babylonjs/core';
 
 
 export default class CustomGizmo
@@ -22,7 +22,7 @@ export default class CustomGizmo
 
     }
 
-    create(type)
+    create(type): void
     {
         for (let i = 0; i <= 2; i++)
         {
@@ -31,12 +31,12 @@ export default class CustomGizmo
         }
     }
 
-    disable()
+    disable(): void
     {
         this.gizmo.forEach(axisGizmo =>
         {
             axisGizmo.attachedMesh = null;
-        })
+        });
     }
 }
 
