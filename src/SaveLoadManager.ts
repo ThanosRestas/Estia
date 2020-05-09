@@ -3,6 +3,8 @@ import "@babylonjs/loaders/glTF";
 import "@babylonjs/loaders/OBJ";
 import { assetsManager, scene, pickableMeshes } from "./index";
 import ActiveEntityManager from "./ActiveEntityManager";
+import { GLTF2Export } from '@babylonjs/serializers/glTF';
+
 
 
 export const loadButton = document.getElementById("loadFile");
@@ -18,16 +20,18 @@ class SaveLoadManager
 
   static save(): void
   {
-    if (SaveLoadManager.objectUrl)
+
+    GLTF2Export.GLBAsync(scene, "fileName").then((glb) => {
+      glb.downloadFiles();
+    });
+    
+    /*if (SaveLoadManager.objectUrl)
     {
       window.URL.revokeObjectURL(SaveLoadManager.objectUrl);
     }
 
     const serializedScene = BABYLON.SceneSerializer.Serialize(scene);
     const strMesh = JSON.stringify(serializedScene);
-
-
-
     if (SaveLoadManager.saveFileName.toLowerCase().lastIndexOf('.babylon') !== SaveLoadManager.saveFileName.length - 8 || SaveLoadManager.saveFileName.length < 9)
     {
       SaveLoadManager.saveFileName += '.babylon';
@@ -37,13 +41,12 @@ class SaveLoadManager
 
     // Turn blob into an object URL; saved as a member, so can be cleaned out later
     SaveLoadManager.objectUrl = (window.webkitURL || window.URL).createObjectURL(blob);
-
     const link = window.document.createElement('a');
     link.href = SaveLoadManager.objectUrl;
     link.download = SaveLoadManager.saveFileName;
     const click = document.createEvent('MouseEvents');
     click.initEvent('click', true, false);
-    link.dispatchEvent(click);
+    link.dispatchEvent(click);*/
   }
 
 
@@ -61,12 +64,12 @@ class SaveLoadManager
     task.onSuccess = function (task): void
     {
       // Temporary parent for non parented meshes for easy gizmo pick
-      const parentTemp = new BABYLON.TransformNode("parentTemp");
+      //const parentTemp = new BABYLON.TransformNode("parentTemp");
       task.loadedMeshes.forEach(mesh =>
       {
         pickableMeshes.push(mesh);
         // Assign temp parent
-        mesh.parent = parentTemp;
+        //mesh.parent = parentTemp;
       });
     };
   }

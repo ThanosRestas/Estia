@@ -21,7 +21,7 @@ export default function itemPick(): void
           {
             // If gizmo has a parent(mesh is made from multiple parts)
             // create gizmo on parent.
-            if (pointerInfo.pickInfo.pickedMesh.parent != null)
+            if (pointerInfo.pickInfo.pickedMesh.parent != null && pointerInfo.pickInfo.pickedMesh.parent.name != "__root__")
             {
               ActiveEntityManager.currentActiveMesh = pointerInfo.pickInfo.pickedMesh.parent as BABYLON.Mesh;
             }
